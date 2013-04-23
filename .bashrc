@@ -4,6 +4,79 @@
 
 ec() { emacsclient "$@" & }
 
+
+# Compiles then opens README.pdf
+# Optional argument: the directory containing the document
+DOCS() {
+    if [ -e README.rst ]
+    then
+	rst2pdf README.rst;
+	xdg-open README.pdf;
+    elif [ -e $1 ] && [ $# -eq 1 ]
+    then
+	rst2pdf "$1/README.rst";
+	xdg-open "$1/README.pdf";
+    else
+	echo "README.rst not found."
+    fi
+}
+
+# Compiles then opens DevGuide.pdf
+# Optional argument: the directory containing the document
+DEVDOCS() {
+    if [ -e DevGuide.rst ]
+    then
+	rst2pdf DevGuide.rst;
+	xdg-open DevGuide.pdf;
+    elif [ -e $1 ] && [ $# -eq 1 ]
+    then
+	rst2pdf "$1/DevGuide.rst";
+	xdg-open "$1/DevGuide.pdf";
+    else
+	echo "DevGuide.rst not found."
+    fi
+}
+
+# Echo current git repository name
+currentgitrepo() {
+    # env -i Ignores current environment
+    # git status is a generic git command
+    # > /dev/null push standard output to null
+    # 2>&1 redirects standard error to null
+    if $(env -i git status > /dev/null 2>&1)
+    then
+	for val in $(git remote -v | sed s/.*[/]//)
+	do
+    	    echo "$val";
+	    break
+	done
+    else
+    	echo "No Repository."
+    fi
+}
+
+# Echo current git branch name
+currentgitbranch() {
+    # env -i Ignores current environment
+    # git status is a generic git command
+    # > /dev/null push standard output to null
+    # 2>&1 redirects standard error to null
+    if $(env -i git status > /dev/null 2>&1)
+    then
+	echo $(git branch | grep "\*" | sed s/\*\ //)
+    else
+    	echo "No branch."
+    fi
+}
+
+currentdirectorysize() {
+    for val in $(du -hcs | grep "total")
+    do
+	echo "$val"
+	break
+    done
+}
+
 # pythonz
 [[ -s $HOME/.pythonz/etc/bashrc ]] && source $HOME/.pythonz/etc/bashrc
 
@@ -79,11 +152,22 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
+# if [ "$color_prompt" = yes ]; then
+#     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# else
+#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# fi
+
+# \u   = username
+# \j   = jobs
+# \W   = working directory
+# \n   = newline
+# \#   = command number
+# \e[  = start of color prompt
+# x;ym = foreground color code
+# xm   = background color code
+# \e[m = end of color prompt
+PS1='\e[0;36m\e[47m `currentgitrepo` | `currentgitbranch` | \W \e[m\n\e[0;31m[\#]> \e[m'
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
