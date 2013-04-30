@@ -167,7 +167,9 @@ fi
 # x;ym = foreground color code
 # xm   = background color code
 # \e[m = end of color prompt
-PS1='\e[0;36m\e[47m `currentgitrepo` | `currentgitbranch` | \W \e[m\n\e[0;31m[\#]> \e[m'
+# https://bbs.archlinux.org/viewtopic.php?id=103221
+PS1='\[\e[0;36m\]\[\e[47m\] `currentgitrepo` | `currentgitbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
+
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
