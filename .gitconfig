@@ -1,0 +1,25 @@
+[user]
+	name = Joshua Edgcombe
+	email = joshedgcombe@gmail.com
+[alias]
+	all = !git add --all $(pwd -P) # add all new and changed files in the repo, even if in a subdirectory
+	ci = commit
+	br = branch
+	cia = commit --all # commit all tracked
+	ciam = commit --all -m # commit all tracked with a message
+	cim = commit -m # commit with a message
+	clone = clone --no-hardlinks
+	co = checkout
+	cob = checkout -b # create a new branch
+	freebase = pull --rebase
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	remotebranch = !sh -c 'git push origin HEAD:refs/heads/$0 && git checkout --track -b $0 origin/$0'
+	st = status
+	trackbranch = !sh -c 'git checkout --track -b $0 origin/$0'
+	up = pull --rebase
+[branch]
+	autosetupmerge = true
+[push]
+	default = current
+[color]
+	ui = true
