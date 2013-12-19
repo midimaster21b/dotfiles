@@ -2,38 +2,53 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-ec() { emacsclient "$@" & }
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
 
+##########################
+# Begin My Customizations
+##########################
 
-# Compiles then opens README.pdf
-# Optional argument: the directory containing the document
-DOCS() {
-    if [ -e README.rst ]
-    then
-	rst2pdf README.rst;
-	xdg-open README.pdf;
-    elif [ -e $1 ] && [ $# -eq 1 ]
-    then
-	rst2pdf "$1/README.rst";
-	xdg-open "$1/README.pdf";
-    else
-	echo "README.rst not found."
-    fi
+# pyenv variables and initiation
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# Disallows you to be spammed by the wall command
+mesg n
+
+# Make my default editor emacs
+export EDITOR=emacs
+
+# Always open emacs in no window mode!
+alias emacs='emacs --no-window-system'
+
+######################
+# Begin PS1 Functions
+######################
+
+# Echos quote for terminal title
+get_quote() {
+    # Get the number of lines in the quotes file
+    QUOTE_LINES=`sed -n '$=' /home/midimaster21b/Quotes/Inspirational.quotes`
+
+    # Use modulus (%) and the $RANDOM environment variable to get a random line
+    QUOTE_NUMBER=`expr $RANDOM % $QUOTE_LINES`
+
+    # Shift the line number up, sed's line numbering is 1-indexed
+    QUOTE_NUMBER=`expr $QUOTE_NUMBER + 1`
+
+    # Echo the quote line
+    echo `sed -n "$QUOTE_NUMBER{p;q}" /home/midimaster21b/Quotes/Inspirational.quotes`
 }
 
-# Compiles then opens DevGuide.pdf
-# Optional argument: the directory containing the document
-DEVDOCS() {
-    if [ -e DevGuide.rst ]
+# Echo current pyenv virtualenv
+currentpyenvvirtualenv() {
+    if $(pyenv local > /dev/null 2>&1)
     then
-	rst2pdf DevGuide.rst;
-	xdg-open DevGuide.pdf;
-    elif [ -e $1 ] && [ $# -eq 1 ]
-    then
-	rst2pdf "$1/DevGuide.rst";
-	xdg-open "$1/DevGuide.pdf";
+	echo $(pyenv local)
     else
-	echo "DevGuide.rst not found."
+	echo '-'
     fi
 }
 
@@ -69,34 +84,27 @@ currentgitbranch() {
     fi
 }
 
-currentdirectorysize() {
-    for val in $(du -hcs | grep "total")
-    do
-	echo "$val"
-	break
-    done
-}
+####################
+# End PS1 Functions
+####################
 
-# pythonz
-[[ -s $HOME/.pythonz/etc/bashrc ]] && source $HOME/.pythonz/etc/bashrc
+# \u   = username
+# \j   = jobs
+# \W   = working directory
+# \n   = newline
+# \#   = command number
+# \e[  = start of color prompt
+# x;ym = foreground color code
+# xm   = background color code
+# \e[m = end of color prompt
+# https://bbs.archlinux.org/viewtopic.php?id=103221
+PS1='\[\e[0;36m\]\[\e[47m\] `currentpyenvvirtualenv` | `currentgitrepo` | `currentgitbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
+PROMPT_COMMAND='echo -ne "\033]0;`get_quote`\007"'
 
-# Disallows you to be spammed by the wall command
-mesg n
+########################
+# End My Customizations
+########################
 
-# Make my default editor vim
-export EDITOR=emacs
-
-# Hide compiled python
-alias ls='ls --hide=*.pyc'
-
-# Always open emacs in no window mode!
-alias emacs='emacs --no-window-system'
-
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -117,17 +125,11 @@ shopt -s checkwinsize
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 
-# Add ~/bin to PATH variable
-export PATH=~/bin:~/.local/bin:$PATH
-
-# Initiate virtual environment
-source virtualenvwrapper.sh
-
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
@@ -152,34 +154,23 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+
+# GET RID OF OLD PS1
 # if [ "$color_prompt" = yes ]; then
 #     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 # else
 #     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 # fi
-
-# \u   = username
-# \j   = jobs
-# \W   = working directory
-# \n   = newline
-# \#   = command number
-# \e[  = start of color prompt
-# x;ym = foreground color code
-# xm   = background color code
-# \e[m = end of color prompt
-# https://bbs.archlinux.org/viewtopic.php?id=103221
-PS1='\[\e[0;36m\]\[\e[47m\] `currentgitrepo` | `currentgitbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
-
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+# case "$TERM" in
+# xterm*|rxvt*)
+#     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+#     ;;
+# *)
+#     ;;
+# esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -214,10 +205,6 @@ fi
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
-  fi
 fi
