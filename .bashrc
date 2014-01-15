@@ -9,6 +9,9 @@
 # Begin My Customizations
 ##########################
 
+# Include my bin directory
+PATH="$HOME/bin:$PATH"
+
 # pyenv variables and initiation
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
