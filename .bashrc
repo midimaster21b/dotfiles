@@ -27,10 +27,12 @@ alias emacs='emacs --no-window-system'
 # Begin PS1 Functions
 ######################
 
+export QUOTES_FILE='.quotes'
+
 # Echos quote for terminal title
 get_quote() {
     # Get the number of lines in the quotes file
-    QUOTE_LINES=`sed -n '$=' /home/midimaster21b/Quotes/Inspirational.quotes`
+    QUOTE_LINES=`sed -n '$=' "$HOME/$QUOTES_FILE"`
 
     # Use modulus (%) and the $RANDOM environment variable to get a random line
     QUOTE_NUMBER=`expr $RANDOM % $QUOTE_LINES`
@@ -39,7 +41,7 @@ get_quote() {
     QUOTE_NUMBER=`expr $QUOTE_NUMBER + 1`
 
     # Echo the quote line
-    echo `sed -n "$QUOTE_NUMBER{p;q}" /home/midimaster21b/Quotes/Inspirational.quotes`
+    echo `sed -n "$QUOTE_NUMBER{p;q}" "$HOME/$QUOTES_FILE"`
 }
 
 # Echo current pyenv virtualenv
@@ -66,7 +68,7 @@ currentgitrepo() {
 	    break
 	done
     else
-    	echo "No Repository."
+    	echo "-"
     fi
 }
 
@@ -80,7 +82,7 @@ currentgitbranch() {
     then
 	echo $(git branch | grep "\*" | sed s/\*\ //)
     else
-    	echo "No branch."
+    	echo "-"
     fi
 }
 
