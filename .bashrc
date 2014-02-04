@@ -14,8 +14,12 @@ PATH="$HOME/bin:$PATH"
 
 # pyenv variables and initiation
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+export PYENV_BIN_DIR="$PYENV_ROOT/bin"
+
+if [[ -d "$PYENV_BIN_DIR" ]]; then
+    export PATH="$PYENV_BIN_DIR:$PATH"
+    eval "$(pyenv init -)"
+fi
 
 # Disallows you to be spammed by the wall command
 mesg n
