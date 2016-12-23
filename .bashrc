@@ -21,6 +21,12 @@ if [[ -d "$PYENV_BIN_DIR" ]]; then
     eval "$(pyenv init -)"
 fi
 
+# Add rbenv shims to PATH
+export PATH="$HOME/.rbenv/bin:$PATH"
+
+# Enable rbenv autocomplete
+eval "$(rbenv init -)"
+
 # Disallows you to be spammed by the wall command
 mesg n
 
