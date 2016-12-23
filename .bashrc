@@ -58,17 +58,23 @@ get_quote() {
 }
 
 # Echo current pyenv virtualenv
-currentpyenvvirtualenv() {
+currentworkingenv() {
     if $(pyenv local > /dev/null 2>&1)
     then
 	echo $(pyenv local)
+    elif $(env -i git status > /dev/null 2>&1)
+    then
+	 echo 'Git';
+    elif $(env -i svn info > /dev/null 2>&1)
+    then
+	echo 'SVN';
     else
 	echo '-'
     fi
 }
 
 # Echo current git repository name
-currentgitrepo() {
+currentrepo() {
     # env -i Ignores current environment
     # git status is a generic git command
     # > /dev/null push standard output to null
@@ -80,13 +86,16 @@ currentgitrepo() {
     	    echo "$val";
 	    break
 	done
+    elif $(env -i svn info > /dev/null 2>&1)
+    then
+	echo $(svn info --show-item wc-root | sed s/.*[/]//)
     else
     	echo "-"
     fi
 }
 
 # Echo current git branch name
-currentgitbranch() {
+currentbranch() {
     # env -i Ignores current environment
     # git status is a generic git command
     # > /dev/null push standard output to null
@@ -94,6 +103,9 @@ currentgitbranch() {
     if $(env -i git status > /dev/null 2>&1)
     then
 	echo $(git branch | grep "\*" | sed s/\*\ //)
+    elif $(env -i svn info > /dev/null 2>&1)
+    then
+	echo $(svn info --show-item relative-url | awk -F "/" '{print $2}')
     else
     	echo "-"
     fi
@@ -113,7 +125,7 @@ currentgitbranch() {
 # xm   = background color code
 # \e[m = end of color prompt
 # https://bbs.archlinux.org/viewtopic.php?id=103221
-PS1='\[\e[0;36m\]\[\e[47m\] `currentpyenvvirtualenv` | `currentgitrepo` | `currentgitbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
+PS1='\[\e[0;36m\]\[\e[47m\] `currentworkingenv` | `currentrepo` | `currentbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
 PROMPT_COMMAND='echo -ne "\033]0;`get_quote`\007"'
 
 ########################
