@@ -61,7 +61,10 @@ get_quote() {
 currentworkingenv() {
     if $(pyenv local > /dev/null 2>&1)
     then
-	echo $(pyenv local)
+	echo "Python $(pyenv local)"
+    elif $(rbenv local > /dev/null 2>&1)
+    then
+	echo "Ruby $(rbenv local)"
     elif $(env -i git status > /dev/null 2>&1)
     then
 	 echo 'Git';
