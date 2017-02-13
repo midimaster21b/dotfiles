@@ -36,6 +36,12 @@ export EDITOR=emacs
 # Always open emacs in no window mode!
 alias emacs='emacs --no-window-system'
 
+alias mx='tmux new -s'
+
+alias cx='tmux attach -t'
+
+alias lx='tmux list-sessions'
+
 ######################
 # Begin PS1 Functions
 ######################
