@@ -6,10 +6,10 @@ cp .tmux.conf ~
 cp -r .emacs.d ~
 
 # Install the libraries
-sudo apt install libsqlite3-dev libreadline-dev zlib1g-dev libssl-dev libbz2-dev libffi-dev liblzma-dev
+sudo apt -y install libsqlite3-dev libreadline-dev zlib1g-dev libssl-dev libbz2-dev libffi-dev liblzma-dev
 
 # Install the tools
-sudo apt install tmux git emacs curl
+sudo apt -y install tmux git emacs curl
 
 # Install asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
