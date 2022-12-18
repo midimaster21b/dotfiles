@@ -9,7 +9,7 @@ cp -r .emacs.d ~
 sudo apt -y install libncurses5 libtinfo5 libncurses5-dev libncursesw5-dev
 
 # Install python prerequisite libraries
-sudo apt -y install libsqlite3-dev libreadline-dev zlib1g-dev libssl-dev libbz2-dev libffi-dev liblzma-dev
+sudo apt -y install build-essential libsqlite3-dev libreadline-dev zlib1g-dev libssl-dev libbz2-dev libffi-dev liblzma-dev
 
 # Install the tools
 sudo apt -y install tmux git emacs curl
