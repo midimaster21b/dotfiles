@@ -4,6 +4,8 @@ cp .gitconfig ~
 cp .quotes ~
 cp .tmux.conf ~
 cp -r .emacs.d ~
+mkdir -vp ~/.config/fusesoc
+touch ~/.config/fusesoc/fusesoc.conf
 
 # Install Xilinx Vivado prerequisite libraries
 sudo apt -y install libncurses5 libtinfo5 libncurses5-dev libncursesw5-dev

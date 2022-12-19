@@ -245,5 +245,9 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+# Add asdf shims and completions
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
+
+# Add Vivado binaries
+export PATH="$PATH:/tools/Xilinx/Vivado/2022.1/bin"
