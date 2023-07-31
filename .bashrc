@@ -8,24 +8,8 @@
 ##########################
 # Begin My Customizations
 ##########################
-
 # Include my bin directory
 PATH="$HOME/bin:$PATH"
-
-# pyenv variables and initiation
-export PYENV_ROOT="$HOME/.pyenv"
-export PYENV_BIN_DIR="$PYENV_ROOT/bin"
-
-if [[ -d "$PYENV_BIN_DIR" ]]; then
-    export PATH="$PYENV_BIN_DIR:$PATH"
-    eval "$(pyenv init -)"
-fi
-
-# Add rbenv shims to PATH
-export PATH="$HOME/.rbenv/bin:$PATH"
-
-# Enable rbenv autocomplete
-eval "$(rbenv init -)"
 
 # Disallows you to be spammed by the wall command
 mesg n
@@ -33,19 +17,32 @@ mesg n
 # Make my default editor emacs
 export EDITOR=emacs
 
+#########################################
+# Emacs
+#########################################
 # Always open emacs in no window mode!
 alias emacs='emacs --no-window-system'
 
+#########################################
+# Tmux
+#########################################
 alias mx='tmux new -s'
-
 alias cx='tmux attach -t'
-
 alias lx='tmux list-sessions'
 
-######################
-# Begin PS1 Functions
-######################
+#########################################
+# ANTLR
+#########################################
+export ANTLR_HOME="$HOME/ANTLR-4.12.0"
+export ANTLR_JAR="$ANTLR_HOME/antlr-4.12.0-complete.jar"
+export CLASSPATH=".:$ANTLR_JAR:$CLASSPATH"
+alias antlr4="java -jar $ANTLR_JAR"
+alias grun="java org.antlr.v4.gui.TestRig"
 
+
+#########################################
+# Begin PS1 Functions
+#########################################
 export QUOTES_FILE='.quotes'
 
 # Echos quote for terminal title
@@ -65,13 +62,7 @@ get_quote() {
 
 # Echo current pyenv virtualenv
 currentworkingenv() {
-    if $(pyenv local > /dev/null 2>&1)
-    then
-	echo "Python $(pyenv local)"
-    elif $(rbenv local > /dev/null 2>&1)
-    then
-	echo "Ruby $(rbenv local)"
-    elif $(env -i git status > /dev/null 2>&1)
+    if $(env -i git status > /dev/null 2>&1)
     then
 	 echo 'Git';
     elif $(env -i svn info > /dev/null 2>&1)
@@ -120,10 +111,6 @@ currentbranch() {
     fi
 }
 
-####################
-# End PS1 Functions
-####################
-
 # \u   = username
 # \j   = jobs
 # \W   = working directory
@@ -136,11 +123,11 @@ currentbranch() {
 # https://bbs.archlinux.org/viewtopic.php?id=103221
 PS1='\[\e[0;36m\]\[\e[47m\] `currentworkingenv` | `currentrepo` | `currentbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
 PROMPT_COMMAND='echo -ne "\033]0;`get_quote`\007"'
-
-########################
+#########################################
+# End PS1 Functions
+#########################################
 # End My Customizations
-########################
-
+#########################################
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -192,29 +179,12 @@ fi
 
 
 # GET RID OF OLD PS1
-# if [ "$color_prompt" = yes ]; then
-#     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-# else
-#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-# fi
 unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-# case "$TERM" in
-# xterm*|rxvt*)
-#     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-#     ;;
-# *)
-#     ;;
-# esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -233,7 +203,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -250,4 +219,6 @@ fi
 . $HOME/.asdf/completions/asdf.bash
 
 # Add Vivado binaries
-export PATH="$PATH:/tools/Xilinx/Vivado/2022.1/bin"
+export PATH="$PATH:/tools/Xilinx/Vivado/2019.1/bin"
+export PATH="$PATH:/tools/Xilinx/Vivado/2018.3/bin/"
+export PATH="$PATH:/tools/Xilinx/Vivado/2021.1/bin"
