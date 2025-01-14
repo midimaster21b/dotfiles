@@ -121,7 +121,7 @@ currentbranch() {
 # xm   = background color code
 # \e[m = end of color prompt
 # https://bbs.archlinux.org/viewtopic.php?id=103221
-PS1='\[\e[0;36m\]\[\e[47m\] `currentworkingenv` | `currentrepo` | `currentbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
+PS1='\[\e[30;47m\] `currentworkingenv` | `currentrepo` | `currentbranch` | \w \[\e[m\]\[\e[m\]\n\[\e[0;31m\][\#]> \[\e[m\]'
 PROMPT_COMMAND='echo -ne "\033]0;`get_quote`\007"'
 #########################################
 # End PS1 Functions
